@@ -1,5 +1,6 @@
 resource "aws_instance" "main" {
-  ami           = "ami-07b0c09aab6e66ee9"
+  count = 5 // MetaArgument
+  ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
   tags = {
     Name        = "${var.env}-instance" //dev-instance, qa-instance, stage-instance, prod-instance
@@ -7,15 +8,19 @@ resource "aws_instance" "main" {
     Environment = var.env
   }
   vpc_security_group_ids = [ aws_security_group.main.id ]
+  user_data = templatefile("userdata.sh", { environment = var.env })
 }
-
 // Reference to Resource
 // Syntax: first_label.second_label.attribute
 // Example: aws_security_group.main.id
 
 // Reference to Input Variable
 // Syntax: var.variable_name
-// Exampl: var.instance_type
+// Example: var.instance_type
+
+// Reference to Data Source
+// Syntax: data.first_label.second_label.attribute
+// Example: data.aws_ami.amazon_linux_2023.id
 
 resource "aws_security_group" "main" {
   name        = "webserver-sg"
