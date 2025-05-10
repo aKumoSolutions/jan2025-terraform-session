@@ -31,6 +31,7 @@ output "main_db_password" {
   sensitive = true
 }
 
+
 // skip_final_snapshot  = true 
 // there will not be snapshot
 
